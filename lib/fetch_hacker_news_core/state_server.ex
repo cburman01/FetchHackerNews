@@ -1,12 +1,25 @@
 defmodule FetchHackerNewsCore.StateServer do
+  @moduledoc """
+  Maintains the current state of top 50 news items.
+  """
+
   use GenServer
   require Logger
   import FetchHackerNewsCore.ApiHelper
 
+  @doc """
+  Starts the  State Server
+  """
   def start_link(_), do: GenServer.start_link(__MODULE__, [], name: :state_server)
   def init(seed), do: {:ok, seed}
 
-  #   Public API
+  # ========
+  # Public APIS
+  # ========
+
+  @doc """
+  Called to set the new state. This will overwrite all current state. 
+  """
   def update_state(data) do
     case get_pid() do
       nil -> {:error, "Unable to fetch data. State Server down."}
@@ -14,6 +27,9 @@ defmodule FetchHackerNewsCore.StateServer do
     end
   end
 
+  @doc """
+  Gets the current state
+  """
   def get_state() do
     case get_pid() do
       nil -> {:error, "Unable to fetch data. State Server down."}
@@ -21,6 +37,9 @@ defmodule FetchHackerNewsCore.StateServer do
     end
   end
 
+  @doc """
+  Gets a single news items by ID. 
+  """
   def get_single_post(id) do
     case get_pid() do
       nil -> {:error, "Unable to fetch data. State Server down."}
@@ -28,6 +47,9 @@ defmodule FetchHackerNewsCore.StateServer do
     end
   end
 
+  @doc """
+  Gets the posts chunked by 10's. 
+  """
   def get_posts_by_page(pg) when pg > 0 do
     case get_state() do
       {:ok, posts} ->

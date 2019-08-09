@@ -1,9 +1,16 @@
 defmodule FetchHackerNewsCore.DataFetcher do
+  @moduledoc """
+  Main worker  that will aggregate news items from HackerNews. Module will iterate every 5 minutes. 
+  StateServer must be started before. 
+  """
   use GenServer
   require Logger
   import FetchHackerNewsCore.ApiHelper
   @timeout 300_000
 
+  @doc """
+  Starts the DataFetcher
+  """
   def start_link(_) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
