@@ -24,18 +24,19 @@ defmodule FetchHackerNewsCore.ApiHelper do
   Marry post ID's with full post details
   """
   def combine_with_post_content({:ok, ids}) do
-    Parallel.pmap(ids, fn id ->
-      get_post(id)
-    end)
-    |> Enum.map(fn
-      {:ok, post} ->
-        post
+    data =
+      Parallel.pmap(ids, &get_post(&1))
+      |> Enum.map(fn
+        {:ok, post} ->
+          post
 
-      {:error, _reason} ->
-        # Do something with the error maybe? Probably doesnt matter since next iteration will upate state 
-        nil
-    end)
-    |> Enum.filter(&(&1 != nil))
+        {:error, _reason} ->
+          # Do something with the error maybe? Probably doesnt matter since next iteration will upate state 
+          nil
+      end)
+      |> Enum.filter(&(&1 != nil))
+
+    {:ok, data}
   end
 
   def combine_with_post_content({:error, reason}), do: {:error, reason}

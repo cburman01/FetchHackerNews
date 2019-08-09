@@ -20,11 +20,15 @@ defmodule FetchHackerNewsCore.StateServer do
   @doc """
   Called to set the new state. This will overwrite all current state. 
   """
-  def update_state(data) do
+  def update_state({:ok, data}) do
     case get_pid() do
       nil -> {:error, "Unable to fetch data. State Server down."}
       pid -> GenServer.cast(pid, {:update, data})
     end
+  end
+  
+  def update_state({:error, _reason}) do
+    Logger.error("Unable to update state. Most Likley HackerNews is down.")
   end
 
   @doc """

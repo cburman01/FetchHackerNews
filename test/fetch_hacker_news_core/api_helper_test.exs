@@ -10,6 +10,6 @@ defmodule ApiHelperTests do
       FetchHackerNewsCore.ApiHelper.get_top_posts()
       |> FetchHackerNewsCore.ApiHelper.combine_with_post_content()
 
-    assert is_list(data)
+    assert {:ok, ret} = data
   end
 end
