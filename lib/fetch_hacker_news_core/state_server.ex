@@ -7,9 +7,19 @@ defmodule FetchHackerNewsCore.StateServer do
   def init(seed), do: {:ok, seed}
 
   #   Public API
-  def update_state(data), do: GenServer.cast(:state_server, {:update, data})
+  def update_state(data) do
+    case get_pid() do
+      nil -> {:error, "Unable to fetch data. State Server down."}
+      pid -> GenServer.cast(pid, {:update, data})
+    end
+  end
 
-  def get_state(), do: GenServer.call(:state_server, :get)
+  def get_state() do
+    case get_pid() do
+      nil -> {:error, "Unable to fetch data. State Server down."}
+      pid -> GenServer.call(pid, :get)
+    end
+  end
 
   def get_single_post(id), do: GenServer.call(:state_server, {:get, id})
 
@@ -29,6 +39,8 @@ defmodule FetchHackerNewsCore.StateServer do
   end
 
   def get_posts_by_page(_pg), do: {:error, "Page must be greater than 0"}
+
+  defp get_pid(), do: GenServer.whereis(:state_server)
 
   def handle_cast({:update, data}, state) when data == state, do: {:noreply, data}
 
