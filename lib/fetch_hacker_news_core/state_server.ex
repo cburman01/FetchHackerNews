@@ -21,7 +21,12 @@ defmodule FetchHackerNewsCore.StateServer do
     end
   end
 
-  def get_single_post(id), do: GenServer.call(:state_server, {:get, id})
+  def get_single_post(id) do
+    case get_pid() do
+      nil -> {:error, "Unable to fetch data. State Server down."}
+      pid -> GenServer.call(pid, {:get, id})
+    end
+  end
 
   def get_posts_by_page(pg) when pg > 0 do
     case get_state() do
