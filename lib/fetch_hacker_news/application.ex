@@ -9,8 +9,8 @@ defmodule FetchHackerNews.Application do
     # List all child processes to be supervised
     children = [
       FetchHackerNewsWeb.Endpoint,
-      {FetchHackerNewsCore.StateServer, []},
-      {FetchHackerNewsCore.DataFetcher, []}
+      {FetchHackerNewsCore.StateServerSupervisor, []},
+      {FetchHackerNewsCore.DataFetcherSupervisor, []}
     ]
 
     opts = [strategy: :one_for_one, name: FetchHackerNews.Supervisor]
