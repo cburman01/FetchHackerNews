@@ -1,6 +1,8 @@
 defmodule FetchHackerNewsWeb.ApiController do
   use FetchHackerNewsWeb, :controller
 
+  action_fallback(FetchHackerNewsWeb.FallbackController)
+
   def get_top_posts(conn, %{"page" => pg} = _params) do
     with {int_pg, _} <- Integer.parse(pg),
          {:ok, data} <- FetchHackerNewsCore.StateServer.get_posts_by_page(int_pg) do
