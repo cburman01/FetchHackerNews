@@ -1,6 +1,6 @@
 defmodule FetchHackerNewsCore.ApiHelper do
   @moduledoc """
-  Module to call HackerNews API's 
+  Module to call HackerNews API's
   """
 
   @doc """
@@ -31,7 +31,7 @@ defmodule FetchHackerNewsCore.ApiHelper do
           post
 
         {:error, _reason} ->
-          # Do something with the error maybe? Probably doesnt matter since next iteration will upate state 
+          # Do something with the error maybe? Probably doesnt matter since next iteration will upate state
           nil
       end)
       |> Enum.filter(&(&1 != nil))
@@ -44,12 +44,8 @@ defmodule FetchHackerNewsCore.ApiHelper do
   @doc """
   Reduces the post count to 50
   """
-  def limit_posts({:ok, posts}) when length(posts) > 50 do
-    count_to_drop = abs(50 - Enum.count(posts))
-    {:ok, Enum.drop(posts, count_to_drop)}
-  end
+  def limit_posts({:ok, posts}), do: {:ok, Enum.take(posts, 50)}
 
-  def limit_posts({:ok, posts}), do: {:ok, posts}
   def limit_posts({:error, reason}), do: {:error, reason}
 
   @doc """
